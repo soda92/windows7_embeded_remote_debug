@@ -27,6 +27,14 @@
 *.lib
 
 # Executables
-*.exe
+# *.exe
 *.out
 *.app
+
+# frp
+*.log
+*.log.old
+*.bak
+!frpc.exe
+!frps.exe
+frpc.ini
