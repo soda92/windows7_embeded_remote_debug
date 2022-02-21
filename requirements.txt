@@ -1,0 +1,24 @@
+invoke
+pyserial
+pyttsx3
+
+python-vlc
+wheel
+pyinstaller
+black
+psutil
+
+# depndencies
+PyQt5
+pywin32
+pywinauto
+Flask
+
+# doc
+sphinx
+sphinx-qt-documentation
+
+PyQt6
+Django
+psycopg2
+sqlalchemy

@@ -1,9 +1,0 @@
-<service>
-    <id>frpc</id>
-    <name>frpc</name>
-    <description>frpc服务</description>
-    <executable>C:\Users\user\Desktop\frp_0.39.1_windows_amd64\frpc.exe</executable>
-    <workingdirectory>C:\Users\user\Desktop\frp_0.39.1_windows_amd64\</workingdirectory>
-    <arguments>-c frpc.ini</arguments>
-    <log mode="roll" />
-</service>
