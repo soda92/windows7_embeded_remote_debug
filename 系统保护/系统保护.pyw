@@ -1,6 +1,11 @@
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+import platform
+
+debug = False
+if int(platform.version().split(".")[0]) > 7:
+    debug = True
 
 
 class Status(QtWidgets.QWidget):
@@ -34,11 +39,13 @@ import subprocess
 
 import pdb
 
+
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.widget = QtWidgets.QWidget()
-        
+        self.setWindowTitle("系统保护")
+
         self.palette = self.widget.palette()
         self.palette.setColor(self.widget.backgroundRole(), QtGui.QColor("black"))
         self.palette.setColor(self.widget.foregroundRole(), QtGui.QColor("white"))
@@ -53,10 +60,32 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(self.widget)
         self.status = None
         self.set_status()
+        self.button = QtWidgets.QPushButton()
+
+        self.button.setStyleSheet(
+        """
+        QPushButton{
+            font-size: 22px;
+            font-family: \"Microsoft Yahei\";
+        }
+        
+        """
+        )
+        layout.addWidget(self.button)
+        if self.status:
+            self.button.setText("关闭保护")
+        else:
+            self.button.setText("开启保护")
+        self.button.clicked.connect(self.switch)
 
     def set_status(self):
-        p = subprocess.run(["fbwfmgr", "/displayconfig"], capture_output=True)
-        out = p.stdout.decode("gbk")
+        if debug:
+            out = """
+            filter state: enabled.
+            """
+        else:
+            p = subprocess.run(["fbwfmgr", "/displayconfig"], capture_output=True)
+            out = p.stdout.decode("gbk")
         print(out)
         for line in out.split("\n"):
             if line.strip().startswith("filter state"):
@@ -64,23 +93,35 @@ class MainWindow(QtWidgets.QMainWindow):
                 if status == "disabled":
                     self.status = False
                     self.current.set_val("未保护")
-                    self.palette.setColor(self.widget.backgroundRole(), QtGui.QColor("red"))
+                    self.palette.setColor(
+                        self.widget.backgroundRole(), QtGui.QColor("red")
+                    )
                     self.widget.setPalette(self.palette)
                 elif status == "enabled":
                     self.status = True
                     self.current.set_val("保护中")
-                    self.palette.setColor(self.widget.backgroundRole(), QtGui.QColor("green"))
+                    self.palette.setColor(
+                        self.widget.backgroundRole(), QtGui.QColor("green")
+                    )
                     self.widget.setPalette(self.palette)
                 else:
                     pdb.set_trace()
                     self.current.set_val(out)
                 break
 
+    def switch(self):
+        if self.status:
+            subprocess.call("关闭保护.bat")
+        else:
+            subprocess.call("开启保护.bat")
+
 
 if __name__ == "__main__":
     import ctypes, sys
 
     def is_admin():
+        if debug:
+            return True
         try:
             return ctypes.windll.shell32.IsUserAnAdmin()
         except:
