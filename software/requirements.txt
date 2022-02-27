@@ -2,6 +2,9 @@ invoke
 pyserial
 pyttsx3
 
+netifaces
+chardet
+
 python-vlc
 wheel
 pyinstaller
